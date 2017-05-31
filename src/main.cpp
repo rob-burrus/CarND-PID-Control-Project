@@ -12,11 +12,7 @@ constexpr double pi() { return M_PI; }
 double deg2rad(double x) { return x * pi() / 180; }
 double rad2deg(double x) { return x * 180 / pi(); }
 
-
-const int num_params = 3;
-double dp[num_params] = {1.0, 1.0, 1.0};
-double tol = 0.001;
-double speed_target = 50.0;
+const double speed_target = 50.0;
 
 // Checks if the SocketIO event has JSON data.
 // If there is data the JSON object in string format will be returned,
@@ -41,8 +37,9 @@ int main()
   PID pid_steer;
   PID pid_speed;
   
-  pid_steer.Init(0.1, 0.001, 2.5);
-  pid_speed.Init(0.1, 0.001, 2.5);
+
+  pid_steer.Init(0.1, 0.00001, 3.0);
+  pid_speed.Init(0.1, 0.001, 1.0);
   
   
 
@@ -62,6 +59,10 @@ int main()
           double speed = std::stod(j[1]["speed"].get<std::string>());
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           
+          
+          
+          
+          
           //Steering Value
           pid_steer.UpdateError(cte);
           double steer_value = pid_steer.TotalError();
@@ -72,7 +73,6 @@ int main()
           }
           
           //Speed Value
-          
           double speed_error = (speed - speed_target) / speed_target;
           pid_speed.UpdateError(speed_error);
           
